@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>Daymark — Daily Schedule</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2c;--panel2:#182238;--line:#26334b;--text:#edf2fb;--muted:#98a7bf;--accent:#a4f4c5;--accent2:#72dba0;--red:#ff8f91;--yellow:#ffd489;--blue:#94baff;--shadow:0 18px 50px #0003}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -20%,#20314a 0,transparent 45%),var(--bg);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.app{max-width:1440px;margin:auto;padding:30px clamp(16px,4vw,56px) 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:15px;background:var(--accent);display:grid;place-items:center;color:#102218;font-size:23px;font-weight:900;box-shadow:0 8px 24px #a4f4c528}.brand h1{font-size:20px;letter-spacing:-.5px;margin:0}.brand p{margin:1px 0 0;color:var(--muted);font-size:12px}.header-actions{display:flex;gap:10px;align-items:center}.iconbtn,.quietbtn,.primary,.dangerbtn{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 14px;transition:.18s}.iconbtn:hover,.quietbtn:hover{background:var(--panel2);border-color:#50617e}.primary{background:var(--accent);border-color:transparent;color:#102218;font-weight:750}.primary:hover{background:#bbf8d2;transform:translateY(-1px)}.quietbtn{color:var(--text)}.quietbtn.small,.iconbtn{padding:8px 11px}.dangerbtn{color:#ffb4b4;border-color:#563541;background:#241b29;padding:7px 10px}.dangerbtn:hover{background:#39232c}
+.topline{display:flex;justify-content:space-between;align-items:flex-end;margin:10px 0 22px;gap:20px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;color:var(--accent);font-weight:700}.topline h2{font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-1.4px;margin:6px 0 8px}.topline p{color:var(--muted);margin:0}.datebox{display:flex;align-items:center;gap:8px}.datebox input{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 12px;border-radius:11px}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,.8fr);gap:20px;align-items:start}
+.panel{background:linear-gradient(160deg,#141e32,#101829);border:1px solid #253149;border-radius:20px;box-shadow:var(--shadow)}.schedule-panel{overflow:hidden}.panelhead{padding:20px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);gap:14px}.panelhead h3{margin:0;font-size:17px}.panelhead p{margin:3px 0 0;color:var(--muted);font-size:12px}.head-left{display:flex;gap:13px;align-items:center}.daynav{display:flex;gap:7px}.daynav button{border:1px solid var(--line);background:var(--panel);border-radius:9px;width:34px;height:34px;font-size:17px}.daynav button:hover{background:var(--panel2)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;padding:16px 20px;border-bottom:1px solid var(--line)}.metric{background:#ffffff05;border:1px solid #ffffff0b;padding:12px 14px;border-radius:13px}.metric strong{font-size:21px;display:block;letter-spacing:-.5px}.metric span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}.progress{height:4px;background:#ffffff12;border-radius:10px;margin-top:10px;overflow:hidden}.progress i{height:100%;display:block;background:var(--accent);border-radius:10px}
+.timeline{padding:8px 20px 25px}.empty{padding:44px 20px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--text);font-size:16px;margin-bottom:5px}.timeline-row{display:grid;grid-template-columns:70px 18px minmax(0,1fr);gap:0;min-height:84px}.time-label{color:var(--muted);font-size:12px;padding:17px 10px 0 0;text-align:right;font-variant-numeric:tabular-nums}.rail{position:relative;display:flex;justify-content:center}.rail:before{content:"";position:absolute;top:0;bottom:0;width:1px;background:#30405b}.dot{z-index:1;margin-top:20px;width:9px;height:9px;border:2px solid var(--accent);background:#142031;border-radius:50%}.event{margin:8px 0 10px 13px;border:1px solid var(--line);background:#19243a;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;gap:12px;min-width:0}.event.done{opacity:.55}.event.done .event-title{text-decoration:line-through}.event-main{min-width:0}.event-title{font-weight:700;overflow-wrap:anywhere}.event-meta{color:var(--muted);font-size:12px;margin-top:4px}.event-notes{color:#b9c5d7;font-size:12px;margin-top:7px;white-space:pre-wrap;overflow-wrap:anywhere}.event-actions{display:flex;align-items:flex-start;gap:6px;flex-shrink:0}.check{accent-color:var(--accent);width:17px;height:17px;margin-top:3px}.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:30px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-right:6px}.tag.class{background:#263d64;color:#a9c9ff}.tag.study{background:#44365c;color:#d3baff}.tag.personal{background:#3f4932;color:#d4ee9f}.tag.meal{background:#583b2d;color:#ffc28f}.tag.work{background:#315246;color:#a5f1cf}.tag.other{background:#3d4656;color:#c7d1df}
+.sidebar{display:grid;gap:16px}.sidepanel{padding:19px}.sidehead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.sidehead h3{margin:0;font-size:15px}.status{display:flex;gap:9px;align-items:flex-start;background:#ffffff06;border:1px solid #ffffff0d;border-radius:12px;padding:12px;color:var(--muted);font-size:12px}.status .bulb{font-size:17px}.status strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}.statusbtn{margin-top:12px;width:100%}.notice-note{font-size:11px;color:var(--muted);margin:10px 2px 0}
+.next-item{padding:11px 0;border-bottom:1px solid #ffffff0d}.next-item:last-child{border:0;padding-bottom:0}.next-time{font-size:11px;color:var(--accent);font-variant-numeric:tabular-nums}.next-title{font-weight:650;font-size:13px}.next-empty{color:var(--muted);font-size:13px;padding:7px 0}.tips{font-size:12px;color:var(--muted);margin:0;padding-left:17px}.tips li{margin:8px 0}
+.overlay{position:fixed;inset:0;z-index:10;background:#050914bd;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(7px)}.overlay.open{display:flex}.modal{width:min(620px,100%);max-height:92vh;overflow:auto;background:#131d30;border:1px solid #34425c;border-radius:20px;box-shadow:0 24px 80px #0009}.modalhead{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0;font-size:18px}.modalbody{padding:20px 22px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{color:#b1bfd3;font-size:12px;font-weight:650}.field input,.field select,.field textarea{width:100%;background:#0e1626;border:1px solid #2c3951;border-radius:10px;padding:10px 11px;color:var(--text);outline:none}.field textarea{min-height:76px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#83d8a8;box-shadow:0 0 0 3px #a4f4c51c}.repeatdays{display:flex;gap:7px;flex-wrap:wrap}.daypick{position:relative}.daypick input{position:absolute;opacity:0}.daypick span{display:grid;place-items:center;width:37px;height:34px;border:1px solid #34415a;border-radius:9px;color:var(--muted);font-size:11px;cursor:pointer}.daypick input:checked+span{background:#244837;color:#c4f9d7;border-color:#70c893}.toggleline{display:flex;gap:10px;align-items:center;color:#c3ccda;font-size:13px}.toggleline input{accent-color:var(--accent)}.modalfoot{padding:14px 22px 20px;display:flex;justify-content:flex-end;gap:9px}.toast{position:fixed;right:20px;bottom:20px;z-index:30;background:#e8fff0;color:#102218;padding:12px 17px;border-radius:12px;box-shadow:var(--shadow);font-weight:650;max-width:min(400px,calc(100vw - 40px));opacity:0;transform:translateY(12px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}.conflict{display:none;background:#4a3024;color:#ffd7b3;border:1px solid #705036;border-radius:10px;padding:9px 11px;font-size:12px}.conflict.show{display:block}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr 1fr}.sidebar .tips-panel{grid-column:1/-1}}
+@media(max-width:600px){.app{padding:18px 13px 36px}header{margin-bottom:24px}.brand p{display:none}.header-actions .quietbtn{font-size:0;padding:9px}.header-actions .quietbtn:after{content:"Export";font-size:12px}.topline{display:block}.datebox{margin-top:16px}.datebox input{flex:1}.panelhead{padding:16px}.summary{padding:12px;gap:7px}.metric{padding:10px}.metric strong{font-size:17px}.timeline{padding:5px 8px 17px}.timeline-row{grid-template-columns:55px 16px minmax(0,1fr)}.time-label{font-size:11px}.event{padding:10px;margin-left:9px}.sidebar{grid-template-columns:1fr}.sidebar .tips-panel{grid-column:auto}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.panelhead> .primary{white-space:nowrap;padding:9px 11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">◷</div><div><h1>Daymark</h1><p>Your day, with a little more direction.</p></div></div>
+  <div class="header-actions"><button class="quietbtn" id="exportBtn" title="Download a backup of your schedule">Export backup</button><button class="iconbtn" id="importBtn" title="Restore a backup">↥</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
+</header>
+<section class="topline">
+  <div><div class="eyebrow">Daily planner</div><h2 id="greeting">Make room for your day.</h2><p id="dateLine">Plan clearly. Do one thing at a time.</p></div>
+  <div class="datebox"><button class="iconbtn" id="prevDay" aria-label="Previous day">‹</button><input id="datePicker" type="date"><button class="iconbtn" id="nextDay" aria-label="Next day">›</button><button class="quietbtn small" id="todayBtn">Today</button></div>
+</section>
+<div class="layout">
+  <main class="panel schedule-panel">
+    <div class="panelhead"><div class="head-left"><div class="daynav"><button id="prevDay2" aria-label="Previous day">‹</button></div><div><h3 id="scheduleHeading">Today’s schedule</h3><p id="scheduleSub">Your plans, in time order</p></div></div><button class="primary" id="addBtn">＋ Add plan</button></div>
+    <div class="summary">
+      <div class="metric"><strong id="plannedCount">0</strong><span>Planned</span></div>
+      <div class="metric"><strong id="doneCount">0%</strong><span>Completed</span><div class="progress"><i id="progressBar" style="width:0%"></i></div></div>
+      <div class="metric"><strong id="freeTime">24h</strong><span>Unscheduled</span></div>
+    </div>
+    <div id="timeline" class="timeline"></div>
+  </main>
+  <aside class="sidebar">
+    <section class="panel sidepanel">
+      <div class="sidehead"><h3>Reminder notifications</h3><span>🔔</span></div>
+      <div class="status"><span class="bulb" id="bellIcon">◉</span><div><strong id="notifyTitle">Notifications are off</strong><span id="notifyText">Turn them on to get a heads-up before plans.</span></div></div>
+      <button class="primary statusbtn" id="notifyBtn">Enable notifications</button>
+      <p class="notice-note">Reminders run while Daymark is open. Browser notification permission is required.</p>
+    </section>
+    <section class="panel sidepanel">
+      <div class="sidehead"><h3>Coming up</h3><span style="color:var(--muted);font-size:11px">TODAY</span></div>
+      <div id="upcoming"></div>
+    </section>
+    <section class="panel sidepanel tips-panel">
+      <div class="sidehead"><h3>A good daily rhythm</h3><span>✦</span></div>
+      <ul class="tips"><li>Give tasks a start and end time so the day feels realistic.</li><li>Leave a little space between classes and focused work.</li><li>Use notes for room numbers, materials, or what “done” means.</li></ul>
+    </section>
+  </aside>
+</div>
+</div>
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <form class="modal" id="planForm">
+  <div class="modalhead"><h3 id="modalTitle">Add a plan</h3><button class="iconbtn" type="button" id="closeModal" aria-label="Close">✕</button></div>
+  <div class="modalbody">
+   <div class="formgrid">
+    <div class="field full"><label for="titleInput">Plan name *</label><input id="titleInput" required maxlength="90" placeholder="e.g. CSPC 103 lecture"></div>
+    <div class="field"><label for="startInput">Starts *</label><input id="startInput" type="time" required value="08:00"></div>
+    <div class="field"><label for="endInput">Ends *</label><input id="endInput" type="time" required value="09:00"></div>
+    <div class="field"><label for="categoryInput">Category</label><select id="categoryInput"><option>Class</option><option>Study</option><option>Work</option><option>Personal</option><option>Meal</option><option>Other</option></select></div>
+    <div class="field"><label for="repeatInput">Repeat</label><select id="repeatInput"><option value="once">This date only</option><option value="daily">Every day</option><option value="weekdays">Weekdays</option><option value="custom">Choose days</option></select></div>
+    <div class="field full" id="daysField" hidden><label>Repeat on</label><div class="repeatdays" id="dayChecks"></div></div>
+    <div class="field"><label for="reminderInput">Reminder</label><select id="reminderInput"><option value="0">At start time</option><option value="5">5 minutes before</option><option value="10" selected>10 minutes before</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="-1">No reminder</option></select></div>
+    <div class="field"><label for="priorityInput">Priority</label><select id="priorityInput"><option>Normal</option><option>High</option><option>Low</option></select></div>
+    <div class="field full"><label for="notesInput">Notes (optional)</label><textarea id="notesInput" maxlength="500" placeholder="Location, materials, or a quick checklist…"></textarea></div>
+    <div class="field full"><div class="conflict" id="conflictBox"></div></div>
+   </div>
+  </div>
+  <div class="modalfoot"><button type="button" class="quietbtn" id="cancelModal">Cancel</button><button type="submit" class="primary">Save plan</button></div>
+ </form>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+const $=s=>document.querySelector(s), DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], STORE="daymark.v1";
+let items=load(), selectedDate=toISO(new Date()), editing=null, toastTimer;
+function load(){try{return JSON.parse(localStorage.getItem(STORE)||"[]")}catch{return []}}
+function save(){localStorage.setItem(STORE,JSON.stringify(items))}
+function toISO(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
+function fromISO(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function dateLabel(s,opts={weekday:"long",month:"long",day:"numeric",year:"numeric"}){return fromISO(s).toLocaleDateString(undefined,opts)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function toMins(t){const [h,m]=t.split(":").map(Number);return h*60+m}
+function fmtTime(t){return new Date("2000-01-01T"+t).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}
+function plansFor(day){const dow=fromISO(day).getDay();return items.filter(x=>x.repeat==="once"?x.date===day:x.repeat==="daily"?day>=x.date:x.repeat==="weekdays"?day>=x.date&&dow>=1&&dow<=5:x.repeat==="custom"?day>=x.date&&(x.days||[]).includes(dow):x.date===day).map(x=>({...x,instanceId:x.id+"@"+day,day})).sort((a,b)=>a.start.localeCompare(b.start))}
+function toast(message){const t=$("#toast");t.textContent=message;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2600)}
+function render(){
+ $("#datePicker").value=selectedDate;const d=fromISO(selectedDate), today=toISO(new Date()), isToday=selectedDate===today;
+ const greeting=isToday?(new Date().getHours()<12?"Good morning.":new Date().getHours()<18?"Good afternoon.":"Good evening."):"Make room for your day.";
+ $("#greeting").textContent=greeting;$("#dateLine").textContent=dateLabel(selectedDate)+(isToday?" · Take it at your pace.":" · Your schedule at a glance.");
+ $("#scheduleHeading").textContent=isToday?"Today’s schedule":dateLabel(selectedDate,{weekday:"long",month:"short",day:"numeric"});
+ $("#scheduleSub").textContent=isToday?"Your plans, in time order":dateLabel(selectedDate,{year:"numeric",month:"long",day:"numeric"});
+ const plans=plansFor(selectedDate), done=plans.filter(x=>x.completedOn===selectedDate).length, pct=plans.length?Math.round(done/plans.length*100):0;
+ $("#plannedCount").textContent=plans.length;$("#doneCount").textContent=pct+"%";$("#progressBar").style.width=pct+"%";
+ let busy=0;plans.forEach(x=>busy+=Math.max(0,toMins(x.end)-toMins(x.start)));$("#freeTime").textContent=Math.max(0,24-Math.floor(busy/60))+"h";
+ const timeNow=new Date(), currentMins=timeNow.getHours()*60+timeNow.getMinutes();
+ $("#timeline").innerHTML=plans.length?plans.map(p=>{
+ const cls=(p.category||"Other").toLowerCase(), doneClass=p.completedOn===selectedDate?"done":"";
+ const repeat=p.repeat==="once"?"":'<span>↻ '+esc(p.repeat==="daily"?"Daily":p.repeat==="weekdays"?"Weekdays":"Custom days")+'</span>';
+ return '<div class="timeline-row"><div class="time-label">'+fmtTime(p.start)+'</div><div class="rail"><i class="dot"></i></div><article class="event '+doneClass+'"><div class="event-main"><div class="event-title"><span class="tag '+cls+'">'+esc(p.category||"Other")+'</span>'+esc(p.title)+'</div><div class="event-meta">'+fmtTime(p.start)+' – '+fmtTime(p.end)+(p.priority==="High"?' · <span style="color:var(--yellow)">High priority</span>':'')+(repeat?' · '+repeat:'')+'</div>'+(p.notes?'<div class="event-notes">'+esc(p.notes)+'</div>':'')+'</div><div class="event-actions"><input class="check" type="checkbox" title="Mark complete" '+(doneClass?'checked':'')+' data-done="'+p.id+'" data-day="'+selectedDate+'"><button class="iconbtn small edit" data-edit="'+p.id+'" aria-label="Edit plan">✎</button><button class="dangerbtn" data-delete="'+p.id+'" aria-label="Delete plan">×</button></div></article></div>'
+ }).join(""):'<div class="empty"><b>Your day is open.</b>Add classes, study time, errands, breaks, or anything you want to remember.</div>';
+ const next=plans.filter(p=>p.completedOn!==selectedDate&&(!isToday||toMins(p.start)>=currentMins)).slice(0,3);
+ $("#upcoming").innerHTML=next.length?next.map(p=>'<div class="next-item"><div class="next-time">'+fmtTime(p.start)+' – '+fmtTime(p.end)+'</div><div class="next-title">'+esc(p.title)+'</div></div>').join(""):'<div class="next-empty">'+(plans.length?"No more plans coming up.":"Nothing scheduled yet. Add a plan to get started.")+'</div>';
+ $("#todayBtn").disabled=isToday;$("#todayBtn").style.opacity=isToday?".55":"1";updateNotificationStatus();
+}
+function updateNotificationStatus(){
+ const supported="Notification"in window, perm=supported?Notification.permission:"unsupported";
+ $("#notifyTitle").textContent=perm==="granted"?"Notifications are on":perm==="denied"?"Notifications are blocked":perm==="unsupported"?"Not available in this browser":"Notifications are off";
+ $("#notifyText").textContent=perm==="granted"?"Reminders are ready for your upcoming plans.":perm==="denied"?"Allow notifications for this site in your browser settings.":perm==="unsupported"?"Use a modern browser on localhost or HTTPS.":"Turn them on to get a heads-up before plans.";
+ $("#bellIcon").textContent=perm==="granted"?"🔔":"◉";$("#notifyBtn").textContent=perm==="granted"?"Notifications enabled":perm==="denied"?"Check browser settings":"Enable notifications";$("#notifyBtn").disabled=perm==="granted"||perm==="denied"||perm==="unsupported";
+}
+function openModal(item=null){
+ editing=item?.id||null;$("#modalTitle").textContent=item?"Edit plan":"Add a plan";
+ $("#titleInput").value=item?.title||"";$("#startInput").value=item?.start||"08:00";$("#endInput").value=item?.end||"09:00";$("#categoryInput").value=item?.category||"Class";$("#repeatInput").value=item?.repeat||"once";$("#reminderInput").value=String(item?.reminder??10);$("#priorityInput").value=item?.priority||"Normal";$("#notesInput").value=item?.notes||"";
+ $("#daysField").hidden=$("#repeatInput").value!=="custom";document.querySelectorAll("#dayChecks input").forEach(c=>c.checked=(item?.days||[]).includes(Number(c.value)));
+ $("#conflictBox").classList.remove("show");$("#modalOverlay").classList.add("open");$("#titleInput").focus();
+}
+function closeModal(){$("#modalOverlay").classList.remove("open");editing=null}
+function conflicts(start,end,excludeId,repeat,date){
+ const s=toMins(start),e=toMins(end);if(e<=s)return "End time must be later than start time.";
+ const candidates=repeat==="once"?[date]:Array.from({length:14},(_,i)=>toISO(new Date(fromISO(date).getTime()+i*86400000)));
+ for(const day of candidates){const dow=fromISO(day).getDay(), matches=items.filter(x=>x.id!==excludeId&&(x.repeat==="once"?x.date===day:x.repeat==="daily"?day>=x.date:x.repeat==="weekdays"?day>=x.date&&dow>=1&&dow<=5:x.repeat==="custom"?day>=x.date&&(x.days||[]).includes(dow):x.date===day));
+ for(const x of matches)if(s<toMins(x.end)&&e>toMins(x.start))return 'This overlaps with “'+x.title+'” on '+dateLabel(day,{weekday:"short",month:"short",day:"numeric"})+'. You can still save it if that is intentional.'}
+ return "";
+}
+function checkConflict(){const m=conflicts($("#startInput").value,$("#endInput").value,editing,$("#repeatInput").value,editing?(items.find(x=>x.id===editing)?.date||selectedDate):selectedDate);const box=$("#conflictBox");box.textContent=m;box.classList.toggle("show",!!m);return !m||m.startsWith("This overlaps")}
+function initDays(){const labels=["S","M","T","W","T","F","S"];$("#dayChecks").innerHTML=labels.map((x,i)=>'<label class="daypick"><input type="checkbox" value="'+i+'"><span>'+x+'</span></label>').join("")}
+function addOrUpdate(e){e.preventDefault();const title=$("#titleInput").value.trim();if(!title)return;const start=$("#startInput").value,end=$("#endInput").value,repeat=$("#repeatInput").value,days=[...document.querySelectorAll("#dayChecks input:checked")].map(c=>Number(c.value));const conflict=conflicts(start,end,editing,repeat,editing?(items.find(x=>x.id===editing)?.date||selectedDate):selectedDate);if(end<=start){$("#conflictBox").textContent="End time must be later than start time.";$("#conflictBox").classList.add("show");return}if(conflict&&!confirm(conflict+" Save anyway?"))return;if(repeat==="custom"&&!days.length){toast("Choose at least one repeat day.");return}
+ const item={id:editing||id(),title,start,end,category:$("#categoryInput").value,repeat,days,reminder:Number($("#reminderInput").value),priority:$("#priorityInput").value,notes:$("#notesInput").value.trim(),date:editing?(items.find(x=>x.id===editing)?.date||selectedDate):selectedDate,completedOn:editing?items.find(x=>x.id===editing)?.completedOn:null};
+ if(editing)items=items.map(x=>x.id===editing?item:x);else items.push(item);save();closeModal();render();toast(editing?"Plan updated.":"Plan added.");}
+function shiftDate(n){const d=fromISO(selectedDate);d.setDate(d.getDate()+n);selectedDate=toISO(d);render()}
+function notifyNow(title,body){if("Notification"in window&&Notification.permission==="granted"){try{new Notification(title,{body,tag:"daymark-"+title})}catch{toast(title+" — "+body)}}else toast(title+" — "+body)}
+function checkReminders(){if(!("Notification"in window)||Notification.permission!=="granted")return;const now=new Date(),today=toISO(now),mins=now.getHours()*60+now.getMinutes();for(const p of plansFor(today)){if(p.reminder<0)continue;const due=toMins(p.start)-p.reminder,key="daymark.sent."+p.id+"."+today;if(mins>=due&&mins<=toMins(p.start)+1&&!sessionStorage.getItem(key)){sessionStorage.setItem(key,"1");notifyNow(p.title,p.reminder===0?"Starts now":p.reminder+" minute"+(p.reminder===1?"":"s")+" before · starts at "+fmtTime(p.start))}}}
+function escapeICS(s){return String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n")}
+function exportICS(){const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Daymark//Daily Planner//EN","CALSCALE:GREGORIAN"];for(const p of items){const d=p.date.replaceAll("-","");lines.push("BEGIN:VEVENT","UID:"+p.id+"@daymark","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,""),"DTSTART:"+d+"T"+p.start.replace(":","")+"00","DTEND:"+d+"T"+p.end.replace(":","")+"00","SUMMARY:"+escapeICS(p.title),"DESCRIPTION:"+escapeICS(p.notes));if(p.repeat==="daily")lines.push("RRULE:FREQ=DAILY");if(p.repeat==="weekdays")lines.push("RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR");if(p.repeat==="custom"&&(p.days||[]).length)lines.push("RRULE:FREQ=WEEKLY;BYDAY="+p.days.map(i=>["SU","MO","TU","WE","TH","FR","SA"][i]).join(","));lines.push("END:VEVENT")}lines.push("END:VCALENDAR");download(new Blob([lines.join("\r\n")],{type:"text/calendar"}),"daymark-schedule.ics")}
+function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function backup(){download(new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),items},null,2)],{type:"application/json"}),"daymark-backup.json")}
+function importBackup(file){const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result),incoming=Array.isArray(data)?data:data.items;if(!Array.isArray(incoming)||incoming.some(x=>!x.title||!x.start||!x.end||!x.date))throw Error();if(!confirm("Import "+incoming.length+" plans? This will replace the schedule saved in this browser."))return;items=incoming;save();render();toast("Schedule restored.")}catch{toast("That file does not look like a Daymark backup.")}};r.readAsText(file)}
+$("#addBtn").onclick=()=>openModal();$("#closeModal").onclick=closeModal;$("#cancelModal").onclick=closeModal;$("#modalOverlay").onclick=e=>{if(e.target===$("#modalOverlay"))closeModal()};$("#planForm").onsubmit=addOrUpdate;
+$("#repeatInput").onchange=()=>{$("#daysField").hidden=$("#repeatInput").value!=="custom";checkConflict()};["startInput","endInput"].forEach(id=>$("#"+id).onchange=checkConflict);
+$("#datePicker").onchange=e=>{if(e.target.value){selectedDate=e.target.value;render()}};$("#prevDay").onclick=()=>shiftDate(-1);$("#prevDay2").onclick=()=>shiftDate(-1);$("#nextDay").onclick=()=>shiftDate(1);$("#todayBtn").onclick=()=>{selectedDate=toISO(new Date());render()};
+$("#timeline").onclick=e=>{const edit=e.target.closest("[data-edit]");if(edit){openModal(items.find(x=>x.id===edit.dataset.edit));return}const del=e.target.closest("[data-delete]");if(del){const item=items.find(x=>x.id===del.dataset.delete);if(item&&confirm('Delete “'+item.title+'” and its repeats?')){items=items.filter(x=>x.id!==item.id);save();render();toast("Plan deleted.")}}};
+$("#timeline").onchange=e=>{const c=e.target.closest("[data-done]");if(c){const item=items.find(x=>x.id===c.dataset.done);if(item){item.completedOn=c.checked?c.dataset.day:null;save();render();toast(c.checked?"Marked complete.":"Marked incomplete.")}}};
+$("#notifyBtn").onclick=async()=>{if(!("Notification"in window)){toast("Browser notifications are not supported here.");return}try{const p=await Notification.requestPermission();updateNotificationStatus();if(p==="granted"){toast("Notifications enabled.");checkReminders()}else if(p==="denied")toast("Notifications were blocked. Check site settings.")}catch{toast("Could not request notification permission.")}};
+$("#exportBtn").onclick=backup;$("#exportBtn").ondblclick=exportICS;$("#importBtn").onclick=()=>$("#importFile").click();$("#importFile").onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value=""};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();if((e.ctrlKey||e.metaKey)&&e.key==="Enter"&&$("#modalOverlay").classList.contains("open"))$("#planForm").requestSubmit()});
+initDays();render();setInterval(checkReminders,15000);setInterval(()=>{const day=toISO(new Date());if(selectedDate!==day)render()},60000);
+})();
+</script>
+</body>
+</html>
